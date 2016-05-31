@@ -4,9 +4,12 @@ app.config([
   '$stateProvider',
   '$urlRouterProvider',
   '$locationProvider',
-  function($stateProvider, $urlRouterProvider, $locationProvider) {
+  '$httpProvider',
+  function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
 
   $urlRouterProvider.otherwise('/404');
+
+  $httpProvider.interceptors.push('AuthInterceptor');
 
   $stateProvider
   .state('home', {

@@ -30,4 +30,40 @@ angular.module('RecipeServices', ['ngResource'])
     }
   } 
 }])
+.factory('AuthInterceptor', ['Auth', function(Auth) {
+    // if querying other APIs, add URLs to this array
+  var excludedEndpoints = [
+    'https://swapi.co/api/films'
+  ];
+
+  return {
+    request: function(config) {
+      var token = Auth.getToken();
+      var excludedEndpoint = excludedEndpoints.indexOf(config.url) > -1;
+
+      if (token && !excludedEndpoint) {
+        config.headers.Authorization = 'Bearer ' + token;
+      }
+      return config;
+    }
+  }
+}])
+.factory('Alerts', [ function(){
+  var alerts = [];
+
+  return {
+    clear: function() {
+      alerts = [];
+    },
+    add: function(type, msg) {   
+      alerts.push({type: type, msg: msg});
+    },
+    get: function() {
+      return alerts;
+    },
+    remove: function(index) {
+      alerts.splice(index, 1);
+    }
+  };
+}])
 
