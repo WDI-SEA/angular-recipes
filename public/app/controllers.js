@@ -70,7 +70,11 @@ angular.module('RecipeCtrls', ['RecipeServices'])
   $scope.userLogin = function() {
     $http.post('/api/auth', $scope.user).then(function success(res) {
       Auth.saveToken(res.data.token);
-      console.log('Token:', res.data.token)
+      
+      // Print the token:
+      console.log('Token: ', res.data.token);
+      // Print the currentUser's email from the token:
+      console.log('Current user: ', Auth.currentUser()._doc.email);
       $location.path('/');
     }, function error(res) {
       console.log("Error:", res);
