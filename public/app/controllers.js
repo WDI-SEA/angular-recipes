@@ -1,6 +1,7 @@
 angular.module('RecipeCtrls', ['RecipeServices'])
-.controller('HomeCtrl', ['$scope', 'Recipe', function($scope, Recipe) {
+.controller('HomeCtrl', ['$scope', 'Recipe', 'Auth', function($scope, Recipe, Auth) {
   $scope.recipes = [];
+  $scope.Auth = Auth
 
   Recipe.query(function success(data) {
     $scope.recipes = data;
@@ -40,26 +41,48 @@ angular.module('RecipeCtrls', ['RecipeServices'])
     });
   }
 }])
-.controller('NavCtrl', ['$scope', function($scope) {
+.controller('NavCtrl', ['$scope', '$location', 'Auth', function($scope, $location, Auth) {
+  $scope.Auth = Auth;
   $scope.logout = function() {
-    //to implement
+    Auth.removeToken();
+    console.log('My token:', Auth.getToken());
+    $location.path('/');
   }
 }])
-.controller('SignupCtrl', ['$scope', function($scope) {
+.controller('SignupCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
   $scope.user = {
     email: '',
     password: ''
   };
   $scope.userSignup = function() {
-    //to implement
+    $http.post('api/users', $scope.user).then(function success(res) {
+      $location.path('/');
+    }, function error(res) {
+      console.log(res);
+    });
   }
 }])
-.controller('LoginCtrl', ['$scope', function($scope) {
+.controller('LoginCtrl', ['$scope', '$http', '$location', 'Auth', 'Alerts', function($scope, $http, $location, Auth) {
   $scope.user = {
     email: '',
     password: ''
   };
   $scope.userLogin = function() {
-    //to implement
+    $http.post('/api/auth', $scope.user).then(function success(res) {
+      Auth.saveToken(res.data.token);
+      
+      // Print the token:
+      console.log('Token: ', res.data.token);
+      // Print the currentUser's email from the token:
+      console.log('Current user: ', Auth.currentUser()._doc.email);
+      $location.path('/');
+    }, function error(res) {
+      console.log("Error:", res);
+      Alerts.add('warning', 'Login failure: ' + res.statusText);
+    });
   }
-}]);
+}])
+.controller('AlertsCtrl', ['$scope', 'Alerts', function($scope, Alerts){
+  $scope.Alerts = Alerts;
+}])
+

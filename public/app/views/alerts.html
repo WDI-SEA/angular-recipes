@@ -1,0 +1,6 @@
+<div ng-controller="AlertsCtrl">
+  <div class="alert alert-{{alert.type}}" ng-repeat="alert in Alerts.get() track by $index">
+    {{alert.msg}}
+    <span class="pull-right" ng-click="Alerts.remove($index)">X</span>
+  </div>
+</div>
