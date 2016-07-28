@@ -20,13 +20,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(require('morgan')('dev'));
 
-app.use('/api/recipes', require('./controllers/recipes'));
-app.use('/api/users', require('./controllers/users'));
+// app.use('/api/recipes', require('./controllers/recipes'));
+// app.use('/api/users', require('./controllers/users'));
 
 // Replace the above routes with the following
-// app.use('/api/recipes', expressJWT({secret: secret}));
-// app.use('/api/users', expressJWT({secret: secret})
-// .unless({path: ['/api/users'], method: 'post'}));
+app.use('/api/recipes', expressJWT({secret: secret}), require('./controllers/recipes'));
+app.use('/api/users',
+  expressJWT({secret: secret}).unless({path: ['/api/users'], method: 'post'}),
+  require('./controllers/users'));
 
 // this middleware will check if expressJWT did not authorize the user, and return a message
 app.use(function (err, req, res, next) {

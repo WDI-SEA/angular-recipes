@@ -1,6 +1,9 @@
 var app = angular.module('RecipeApp', ['ui.router', 'RecipeCtrls']);
 
-app.config([
+app.config(['$httpProvider', function($httpProvider) {
+  $httpProvider.interceptors.push('AuthInterceptor');
+}])
+.config([
   '$stateProvider',
   '$urlRouterProvider',
   '$locationProvider',
